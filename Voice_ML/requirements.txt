@@ -1,0 +1,40 @@
+# Voice_ML — ALL machine-learning inference dependencies.
+# Runs in an ISOLATED environment (uv venv on Python 3.12) so it never perturbs
+# the backend or the validated Phase 1 stack.
+
+# Service
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+pydantic>=2.9
+pydantic-settings>=2.5
+
+# Speech-to-text (preferred: faster-whisper)
+faster-whisper>=1.0.3
+# openai-whisper>=20231117   # optional fallback backend
+
+# Translation (NLLB-200) & base TTS (MMS-TTS / SpeechT5)
+transformers>=4.44
+sentencepiece>=0.2.0
+sacremoses>=0.1.1
+accelerate>=0.30
+torch>=2.2
+scipy>=1.13
+
+# Phase 2 — speaker similarity (Resemblyzer).
+# NOTE: install with --no-deps + modern deps; resemblyzer's transitive pins drag in
+# numba 0.53/llvmlite 0.36 which don't support Python 3.12. See install commands below.
+#   uv pip install resemblyzer --no-deps
+#   uv pip install "librosa>=0.10" soundfile webrtcvad-wheels unidecode
+librosa>=0.10
+soundfile>=0.12
+webrtcvad-wheels>=2.0.14
+unidecode>=1.3
+
+# Phase 2 — speaker preservation (OpenVoice) is NOT on PyPI:
+#   git clone https://github.com/myshell-ai/OpenVoice && pip install -e ./OpenVoice
+#   + download the ToneColorConverter checkpoints (see PHASE2_ENVIRONMENT.md).
+
+# tests
+pytest>=8.0
+pytest-asyncio>=0.23
+httpx>=0.27

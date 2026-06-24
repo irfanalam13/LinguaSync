@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Databases / Node (Phase 5)
+*.db
+*.sqlite3
+node_modules/
+web/.next/
+.env.local
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Runtime / generated
+logs/
+artifacts/
+uploads/
+outputs/
+models/
+*.wav
+*.mp4
+!tests/**/fixtures/**
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Phase 2-4 — isolated ML env, vendored OpenVoice/Wav2Lip, checkpoints, speaker temp
+Voice_ML/.venv/
+**/OpenVoice/
+**/Wav2Lip/
+checkpoints*/
+storage/
+temp/
+*.pth
+*.onnx

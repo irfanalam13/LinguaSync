@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Phase 5 design tokens (dark, AI-focused). See FRONTEND_ARCHITECTURE.md design note. */
+  --primary: #4f46e5;
+  --secondary: #7c3aed;
+  --accent: #06b6d4;
+  --success: #5ba857;
+  --danger: #eb1429;
+  --bg: #0b0b14;          /* practical app background (see note) */
+  --bg-spec: #00d4ff;     /* spec-literal background token */
+  --surface: #15151f;
+  --card: #1b1b27;
+  --border: #2a2a3a;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glass {
+  background: rgba(27, 27, 39, 0.7);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}

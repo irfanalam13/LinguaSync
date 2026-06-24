@@ -1,0 +1,19 @@
+# Phase 1 MVP runs synchronously in-process — no Celery/Redis/Flower.
+# (The original broken celery/redis/flower stack was removed; see PHASE1_ANALYSIS.md.)
+services:
+  api:
+    build: ./Voice_backend
+    ports:
+      - "8000:8000"
+    environment:
+      # auto | cpu | cuda  (cuda requires a GPU runtime, e.g. nvidia-container-toolkit)
+      VC_DEVICE: auto
+    volumes:
+      # Persist generated artifacts and downloaded models across restarts.
+      - ./Voice_backend/artifacts:/app/artifacts
+      - ./Voice_backend/uploads:/app/uploads
+      - ./Voice_backend/logs:/app/logs
+      - model_cache:/root/.cache/huggingface
+
+volumes:
+  model_cache:
