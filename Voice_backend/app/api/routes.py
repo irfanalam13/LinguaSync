@@ -28,11 +28,16 @@ def _new_job_id() -> str:
 
 @router.get("/health")
 def health() -> dict:
-    """Backend health + ML service reachability."""
-    client = get_ml_client()
+    """Fast liveness probe — never blocks on downstreams (used by Render health checks)."""
+    return {"status": "ok", "service": "voice_backend"}
+
+
+@router.get("/ready")
+def ready() -> dict:
+    """Readiness — reports ML reachability (short timeout); does not affect liveness."""
     ml_ok, ml_info = True, {}
     try:
-        ml_info = client.health()
+        ml_info = get_ml_client().health()
     except MLServiceError as e:
         ml_ok, ml_info = False, {"error": str(e)}
     return {"status": "ok", "service": "voice_backend", "ml_reachable": ml_ok, "ml": ml_info}

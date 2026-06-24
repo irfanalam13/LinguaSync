@@ -10,7 +10,11 @@ __pycache__/
 *.sqlite3
 node_modules/
 web/.next/
+
+# Env files — keep .env.example committed, ignore real envs
+.env
 .env.local
+.env.*.local
 
 # Virtual environments
 venv/

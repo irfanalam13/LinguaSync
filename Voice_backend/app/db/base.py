@@ -14,10 +14,27 @@ from app.core.config import get_settings
 
 _settings = get_settings()
 
-_connect_args = {"check_same_thread": False} if _settings.database_url.startswith("sqlite") else {}
+
+def _normalize_url(url: str) -> str:
+    """Use the psycopg (v3) driver for Postgres.
+
+    Managed providers (Neon/Render/Heroku) hand out ``postgresql://…`` URLs, which
+    SQLAlchemy maps to psycopg2 — often absent and unable to parse ``channel_binding``.
+    Rewriting to ``postgresql+psycopg://`` uses psycopg v3 (installed via requirements)
+    and supports Neon's ``sslmode``/``channel_binding`` query params.
+    """
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url[len("postgresql://"):]
+    if url.startswith("postgres://"):  # legacy scheme some providers still emit
+        return "postgresql+psycopg://" + url[len("postgres://"):]
+    return url
+
+
+_db_url = _normalize_url(_settings.database_url)
+_connect_args = {"check_same_thread": False} if _db_url.startswith("sqlite") else {}
 
 engine = create_engine(
-    _settings.database_url,
+    _db_url,
     echo=_settings.db_echo,
     future=True,
     pool_pre_ping=True,

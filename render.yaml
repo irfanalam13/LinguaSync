@@ -1,0 +1,63 @@
+# Render blueprint for the Voice platform.
+# Secrets (sync: false) must be set in the Render dashboard — never commit them.
+services:
+  # ---- Backend API ----
+  - type: web
+    name: linguasync-backend
+    runtime: python
+    rootDir: Voice_backend
+    plan: starter            # free tier cold-starts; starter+ recommended
+    buildCommand: pip install -r requirements.txt && alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health     # fast liveness (no downstream dependency)
+    envVars:
+      - key: VC_DATABASE_URL            # postgresql://… (auto-normalized to +psycopg)
+        sync: false
+      - key: VC_REDIS_URL
+        sync: false
+      - key: VC_JWT_SECRET
+        sync: false
+      - key: VC_QUEUE_BACKEND
+        value: rq
+      - key: VC_STORAGE_BACKEND
+        value: minio
+      - key: VC_MINIO_ENDPOINT
+        sync: false
+      - key: VC_MINIO_ACCESS_KEY
+        sync: false
+      - key: VC_MINIO_SECRET_KEY
+        sync: false
+      - key: VC_ML_SERVICE_URL
+        value: https://linguasync-1.onrender.com
+      - key: VC_CORS_ORIGINS
+        value: '["https://lingua-sync-self.vercel.app"]'
+
+  # ---- Job worker (consumes the Redis queue) ----
+  - type: worker
+    name: linguasync-worker
+    runtime: python
+    rootDir: Voice_backend
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python worker.py
+    envVars:
+      - key: VC_QUEUE_BACKEND
+        value: rq
+      - { key: VC_DATABASE_URL, sync: false }
+      - { key: VC_REDIS_URL, sync: false }
+      - { key: VC_ML_SERVICE_URL, value: https://linguasync-1.onrender.com }
+      - { key: VC_STORAGE_BACKEND, value: minio }
+      - { key: VC_MINIO_ENDPOINT, sync: false }
+      - { key: VC_MINIO_ACCESS_KEY, sync: false }
+      - { key: VC_MINIO_SECRET_KEY, sync: false }
+
+  # ---- Voice_ML inference (HEAVY) ----
+  # torch + transformers + OpenVoice + Wav2Lip + ffmpeg + multi-GB models.
+  # Requires a LARGE instance (ideally GPU) and a Docker image with ffmpeg + the venv stack.
+  # Free/512MB tiers WILL fail (OOM/timeout). Use a Dockerfile and a GPU/large plan.
+  - type: web
+    name: linguasync-ml
+    runtime: docker
+    rootDir: Voice_ML
+    plan: pro                # placeholder — size to model/RAM needs; GPU preferred
+    healthCheckPath: /ml/v1/health
