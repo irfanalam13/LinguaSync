@@ -4,11 +4,12 @@ services:
   # ---- Backend API ----
   - type: web
     name: linguasync-backend
-    runtime: python
-    rootDir: Voice_backend
+    runtime: docker
+    rootDir: .                          # repo root so the shared/ package is in build context
+    dockerfilePath: Voice_backend/Dockerfile
+    dockerContext: .
     plan: starter            # free tier cold-starts; starter+ recommended
-    buildCommand: pip install -r requirements.txt && alembic upgrade head
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    preDeployCommand: cd Voice_backend && alembic upgrade head   # migrate out of the build
     healthCheckPath: /api/v1/health     # fast liveness (no downstream dependency)
     envVars:
       - key: VC_DATABASE_URL            # postgresql://… (auto-normalized to +psycopg)
