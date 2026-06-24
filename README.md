@@ -1,4 +1,4 @@
-# Voice Converter — Phase 1 MVP (English ⇄ Nepali Video Translation)
+# pip install -r requirements.txtVoice Converter — Phase 1 MVP (English ⇄ Nepali Video Translation)
 
 Translate the spoken audio of a video between **English** and **Nepali**, fully
 offline with free/local models. No voice cloning, no speaker preservation, no lip
@@ -8,13 +8,13 @@ sync — just a clean translation pipeline.
 video.mp4 → extract audio → speech-to-text → translate → text-to-speech → merge → output.mp4
 ```
 
-| Stage | Technology |
-|-------|-----------|
-| Audio extract / mux | **ffmpeg** (safe argv, no shell) |
-| Speech-to-text | **faster-whisper** (fallback: openai-whisper) — auto language detect + timestamps |
-| Translation | **NLLB-200** (`facebook/nllb-200-distilled-600M`) |
-| Text-to-speech (English) | **MMS-TTS** (`facebook/mms-tts-eng`, VITS) |
-| Text-to-speech (Nepali) | **SpeechT5** (`aryamanstha/speecht5_tts_nepali_...`) + `microsoft/speecht5_hifigan` |
+| Stage                    | Technology                                                                                    |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| Audio extract / mux      | **ffmpeg** (safe argv, no shell)                                                        |
+| Speech-to-text           | **faster-whisper** (fallback: openai-whisper) — auto language detect + timestamps      |
+| Translation              | **NLLB-200** (`facebook/nllb-200-distilled-600M`)                                     |
+| Text-to-speech (English) | **MMS-TTS** (`facebook/mms-tts-eng`, VITS)                                            |
+| Text-to-speech (Nepali)  | **SpeechT5** (`aryamanstha/speecht5_tts_nepali_...`) + `microsoft/speecht5_hifigan` |
 
 > The TTS layer is **engine-agnostic and per-language**. MMS-TTS has no Nepali voice
 > (`facebook/mms-tts-npi` does not exist — discovered during the real run, see `BLOCKERS.md`),
@@ -69,11 +69,11 @@ voice_converter/
 
 **1. System dependency — ffmpeg** (required; not a pip package):
 
-| OS | Command |
-|----|---------|
-| Windows | `winget install Gyan.FFmpeg` (or `choco install ffmpeg`) |
-| macOS | `brew install ffmpeg` |
-| Debian/Ubuntu | `sudo apt-get install -y ffmpeg` |
+| OS            | Command                                                      |
+| ------------- | ------------------------------------------------------------ |
+| Windows       | `winget install Gyan.FFmpeg` (or `choco install ffmpeg`) |
+| macOS         | `brew install ffmpeg`                                      |
+| Debian/Ubuntu | `sudo apt-get install -y ffmpeg`                           |
 
 Verify: `ffmpeg -version`. If it isn't on PATH, set `VC_FFMPEG_PATH=/full/path/to/ffmpeg`.
 
@@ -149,13 +149,13 @@ docker compose up --build      # ffmpeg baked into the image
 
 All settings are overridable via `VC_*` env vars or a `.env` file in `Voice_backend/`:
 
-| Var | Default | Meaning |
-|-----|---------|---------|
-| `VC_DEVICE` | `auto` | `auto` / `cpu` / `cuda` |
-| `VC_FFMPEG_PATH` | `ffmpeg` | ffmpeg binary path |
-| `VC_ASR_MODEL` | `base` | whisper model size |
-| `VC_TRANSLATION_MODEL` | `facebook/nllb-200-distilled-600M` | NLLB checkpoint |
-| `VC_ARTIFACTS_DIR` | `./artifacts` | per-job output root |
+| Var                      | Default                              | Meaning                       |
+| ------------------------ | ------------------------------------ | ----------------------------- |
+| `VC_DEVICE`            | `auto`                             | `auto` / `cpu` / `cuda` |
+| `VC_FFMPEG_PATH`       | `ffmpeg`                           | ffmpeg binary path            |
+| `VC_ASR_MODEL`         | `base`                             | whisper model size            |
+| `VC_TRANSLATION_MODEL` | `facebook/nllb-200-distilled-600M` | NLLB checkpoint               |
+| `VC_ARTIFACTS_DIR`     | `./artifacts`                      | per-job output root           |
 
 ---
 
