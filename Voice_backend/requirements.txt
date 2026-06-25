@@ -16,7 +16,6 @@ psycopg[binary]>=3.2      # Postgres driver (Neon/Render); URL auto-normalized t
 redis>=5.0               # queue (rq backend)
 rq>=1.16
 minio>=7.2               # object storage (minio backend)
-
 # tests
 pytest>=8.0
 pytest-asyncio>=0.23

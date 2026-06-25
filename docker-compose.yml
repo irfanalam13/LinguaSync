@@ -8,6 +8,10 @@ services:
     environment:
       # auto | cpu | cuda  (cuda requires a GPU runtime, e.g. nvidia-container-toolkit)
       VC_DEVICE: auto
+      VC_APP_BASE_URL: http://localhost:3000
+      VC_SMTP_HOST: smtp-relay.brevo.com
+      VC_SMTP_PORT: 587
+      VC_SMTP_USE_TLS: "true"
     volumes:
       # Persist generated artifacts and downloaded models across restarts.
       - ./Voice_backend/artifacts:/app/artifacts

@@ -45,6 +45,16 @@ class Settings(BaseSettings):
     access_token_ttl_min: int = 30
     refresh_token_ttl_days: int = 14
 
+    # ---- Email / SMTP ------------------------------------------------------
+    app_base_url: str = "http://localhost:3000"
+    smtp_host: str = "smtp-relay.brevo.com"
+    smtp_port: int = 587
+    smtp_username: str | None = None
+    smtp_password: str | None = None
+    smtp_use_tls: bool = True
+    email_from: str | None = None
+    email_from_name: str = "Voice Converter"
+
     # ---- Object storage / MinIO (Phase 5) ---------------------------------
     minio_endpoint: str = "localhost:9000"
     minio_access_key: str = "minioadmin"

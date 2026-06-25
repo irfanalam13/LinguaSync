@@ -13,7 +13,7 @@ const button = cva(
         ghost: "bg-transparent text-text-secondary hover:text-text-primary hover:bg-white/5",
         outline: "border border-border text-text-primary hover:bg-white/5",
       },
-      size: { sm: "h-9 px-3 text-small", md: "h-11 px-5 text-body", lg: "h-13 px-7 text-body-lg" },
+      size: { sm: "h-9 px-3 text-small", md: "h-11 px-5 text-body", lg: "h-14 px-7 text-body-lg" },
     },
     defaultVariants: { variant: "primary", size: "md" },
   }

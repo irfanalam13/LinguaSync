@@ -57,6 +57,9 @@ export default function LoginPage() {
               className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-body outline-none focus:ring-2 focus:ring-primary/50" />
             {formState.errors.password && <p className="text-small text-danger">{formState.errors.password.message}</p>}
             {error && <p className="text-small text-danger">{error}</p>}
+            {mode === "login" && (
+              <a href="/forgot-password" className="block text-right text-small text-text-secondary hover:text-text-primary">Forgot password?</a>
+            )}
             <Button type="submit" className="w-full" disabled={formState.isSubmitting}>
               {formState.isSubmitting ? "Please wait…" : mode === "login" ? "Sign in" : "Sign up"}
             </Button>

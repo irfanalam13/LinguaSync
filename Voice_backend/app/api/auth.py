@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from fastapi import BackgroundTasks
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -9,6 +10,7 @@ from app.api.deps import get_current_user
 from app.db.models.user import User
 from app.db.session import get_db
 from app.services import auth_service as auth
+from app.services import email_service
 from app.schemas.auth import (
     EmailVerifyConfirm,
     LoginRequest,
@@ -25,13 +27,17 @@ router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=TokenResponse, status_code=201)
-def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenResponse:
+def register(
+    body: RegisterRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+) -> TokenResponse:
     try:
         user = auth.register(db, body.email, body.password, body.full_name)
     except auth.ConflictError as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e)) from e
-    # (Email verification token generated here; delivery is a hook.)
-    auth.create_email_verify_token(user)
+    verify_token = auth.create_email_verify_token(user)
+    background_tasks.add_task(email_service.send_email_verification, user.email, verify_token)
     access, refresh = auth.issue_tokens(db, user)
     return TokenResponse(access_token=access, refresh_token=refresh)
 
@@ -61,9 +67,15 @@ def logout(body: LogoutRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/password-reset/request")
-def password_reset_request(body: PasswordResetRequest, db: Session = Depends(get_db)) -> dict:
+def password_reset_request(
+    body: PasswordResetRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+) -> dict:
     token = auth.create_password_reset_token(db, body.email)
-    # Always 200 (don't reveal whether the email exists). Token would be emailed.
+    if token:
+        background_tasks.add_task(email_service.send_password_reset, str(body.email), token)
+    # Always 200 (don't reveal whether the email exists).
     return {"message": "If the email exists, a reset link has been sent.", "reset_token": token}
 
 

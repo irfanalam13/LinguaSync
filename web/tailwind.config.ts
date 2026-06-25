@@ -1,9 +1,9 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Design system from PHASE5 spec. Colors are exposed as CSS variables (globals.css)
- * and mapped here. NOTE: the spec's background/surface/card/border values are highly
- * saturated; see FRONTEND_ARCHITECTURE.md for the design note. Implemented as specified.
+ * Design system. Colors are driven by the CSS variables defined in globals.css so the
+ * practical dark palette (--bg/--surface/--card/--border) is the single source of truth —
+ * Tailwind utilities (bg-surface, border-border, …) and the .glass class now agree.
  */
 const config: Config = {
   darkMode: "class",
@@ -11,17 +11,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#4F46E5",
-        secondary: "#7C3AED",
-        accent: "#06B6D4",
-        success: "#5ba857",
-        danger: "#eb1429",
-        background: "#00d4ff",
-        surface: "#3cacc3",
-        card: "#945aa5",
-        border: "#c40ff0",
-        "text-primary": "#F9FAFB",
-        "text-secondary": "#9CA3AF",
+        primary: "var(--primary)",
+        secondary: "var(--secondary)",
+        accent: "var(--accent)",
+        success: "var(--success)",
+        danger: "var(--danger)",
+        background: "var(--bg)",
+        surface: "var(--surface)",
+        card: "var(--card)",
+        border: "var(--border)",
+        "text-primary": "var(--text-primary)",
+        "text-secondary": "var(--text-secondary)",
       },
       fontFamily: {
         brand: ["var(--font-jakarta)", "system-ui", "sans-serif"],

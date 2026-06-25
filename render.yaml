@@ -32,6 +32,22 @@ services:
         value: https://linguasync-1.onrender.com
       - key: VC_CORS_ORIGINS
         value: '["https://lingua-sync-self.vercel.app"]'
+      - key: VC_APP_BASE_URL
+        value: https://lingua-sync-self.vercel.app
+      - key: VC_SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: VC_SMTP_PORT
+        value: 587
+      - key: VC_SMTP_USE_TLS
+        value: true
+      - key: VC_EMAIL_FROM_NAME
+        value: Voice Converter
+      - key: VC_SMTP_USERNAME
+        sync: false
+      - key: VC_SMTP_PASSWORD
+        sync: false
+      - key: VC_EMAIL_FROM
+        sync: false
 
   # ---- Job worker (consumes the Redis queue) ----
   - type: worker
